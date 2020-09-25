@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Credito Direto ao Consumidor</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <style>
+  label {
+    display: inline-block; width: 14em;
+  }
+  fieldset div {
+    margin-bottom: 2em;
+  }
+  fieldset .help {
+    display: inline-block;
+  }
+  .ui-tooltip {
+    width: 210px;
+  }
+  </style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  
+  <script>
+  $( function() {
+    var tooltips = $( "[title]" ).tooltip({
+      position: {
+        my: "left top",
+        at: "right+5 top-5",
+        collision: "none"
+      }
+    });
+    $( "<button>" )
+      .text( "Calcular" )
+      .button()
+      .on( "click", function() {
+      
+        $("#tabs-1").show();
+        $("#tabs-2").show();
+        $("#price").show();
+        $("#table").show();
+        
+        
+        var parcelamento1 = $("#parcelamento").val();
+        $("#parcelamento1").val(parcelamento1);
+      
+        var juros1 = $("#juros").val();
+        $("#juros1").val(juros1);
+      
+        var valorFinanciado1 = $("#valorFinanciado").val();
+        $("#valorFinanciado1").val(valorFinanciado1);
+      
+        var valorVoltar1 = $("#valorVoltar").val();
+        $("#valorVoltar1").val(valorVoltar1);
+               
+        //Cálculo do coeficiente
+        var j = parseFloat(juros1) / 100;
+        //var a = (1 + parseFloat(juros1));
+        var a = (1 + j);
+        var pot = Math.pow(a, -parseFloat(parcelamento1));     
+        var coeficiente1 = (parseFloat(j) / (1 - pot));
+        $("#coeficiente").val(coeficiente1.toFixed(6));
+        
+        //Cálculo da prestação
+        var r = valorFinanciado1 * coeficiente1;  
+        $("#prestacao").val(r.toFixed(2));
+        
+        //Cálculo do valor pago
+        var valorPago1 = r * parcelamento1;
+        $("#valorPago").val(valorPago1.toFixed(2));
+        
+        //Cálculo do juros por ano
+        var t = 1 + j;
+        var jurosAno1 = (Math.pow(t, 12) - 1) * 100;
+        $("#jurosAno").val(jurosAno1.toFixed(2));
+      
+        //Tabela Price          
+        var jurosPrice = 0;
+        var somaJuros = 0;        
+        var amortizacao = 0;
+        var somaAmortizacao = 0;      
+        var saldoDevedor = valorFinanciado1;
+            
+        var table = '';
+        var x = 1;
+        
+        while (x <= parcelamento1) {
+            jurosPrice = saldoDevedor * j;
+            somaJuros += jurosPrice;
+            amortizacao = r - jurosPrice;
+            somaAmortizacao += amortizacao;
+            
+            table += "<tr><td>" + x + "</td>";
+            table += "<td>" + r.toFixed(2) + "</td>";
+            table += "<td>" + jurosPrice.toFixed(2) + "</td>";
+            table += "<td>" + amortizacao.toFixed(2) + "</td>";
+            saldoDevedor = saldoDevedor - amortizacao;
+            table += "<td>" + saldoDevedor.toFixed(2) + "</td></tr>"           
+            x++;
+        }
+        table += "<tr><td>Total</td>";
+        table += "<td>" + valorPago1.toFixed(2) + "</td>";
+        table += "<td>" + somaJuros.toFixed(2) + "</td>";
+        table += "<td>" + somaAmortizacao.toFixed(2) + "</td>";
+        table += "<td>" + saldoDevedor.toFixed(2) + "</td></tr>" 
+        $('#table tbody').html(table);
+
+        //window.location.replace("tabela.html");
+        tooltips.tooltip( "open" );
+      })
+      .insertAfter( "form" );
+  } );
+  </script>
+</head>
+<body>
+ 
+<form>
+  <fieldset>
+    <legend>Crédito Direto ao Consumidor</legend>
+    <div>
+      <label for="parcelamento">Parcelamento: </label>
+      <input id="parcelamento" name="parcelamento">
+      <label for="parcelamento">meses </label>
+    </div>
+    <div>
+      <label for="juros">Taxa de juros:</label>
+      <input id="juros" name="juros">
+      <label for="juros">% ao mês</label>
+    </div>
+    <div>
+      <label for="valorFinanciado">Valor Financiado:$</label>
+      <input id="valorFinanciado" name="valorFinanciado">
+    </div>
+    <div>
+      <label for="valorFinal">Valor Final (opicional):$</label>
+      <input id="valorFinal" name="valorFinal">
+    </div>
+    <div>
+      <label for="valorVoltar">Valor a voltar (opicional):$</label>
+      <input id="valorVoltar" name="valorVoltar">
+    </div>
+  </fieldset>
+</form>
+ <br><br><br>
+  
+ 
+  <div id="tabs-1" style="display: none">
+        <fieldset>
+            <div>
+                <label for="parcelamento1">Parcelamento: </label>
+                <input id="parcelamento1" name="parcelamento1">
+                <label for="parcelamento1"> meses </label>
+            </div>
+            <div>
+                <label for="juros1">Taxa:</label>
+                <input id="juros1" name="juros1">
+                <input id="jurosAno" name="jurosAno">
+            </div>
+            <div>
+                <label for="valorFinanciado1">Valor Financiado:</label>
+                <input id="valorFinanciado1" name="valorFinanciado1">
+            </div>
+            <div>
+                <label for="valorVoltar1">Valor a voltar:</label>
+                <input id="valorVoltar1" name="valorVoltar1">
+            </div>
+        </fieldset>
+  </div>
+
+  <br><br><br>
+  
+  <div id="tabs-2" style="display: none">
+        <fieldset>
+            <div>
+                <label for="prestacao">Prestação: </label>
+                <input id="prestacao" name="prestacao">
+                <label for="prestacao"> ao mês</label>
+            </div>
+            <div>
+                <label for="coeficiente">Coeficiente de Financiamento:</label>
+                <input id="coeficiente" name="coeficiente">
+            </div>
+            <div>
+                <label for="valorPago">Valor pago:</label>
+                <input id="valorPago" name="valorPago">
+            </div>
+            <div>
+                <label for="valorCorrigido">Valor Corrigido:</label>
+                <input id="valorCorrigido" name="valorCorrigido">
+            </div>
+        </fieldset>
+  </div>
+  
+  <br>
+  
+  <div id="price" style="display: none">
+      <h4> Tabela Price </h4>   
+  </div>
+   
+<table id="table" style="display:none" cellspacing="10">
+    <thead>
+        <tr>
+            <th>Mês</th>
+            <th>Prestação</th>
+            <th>Juros</th>
+            <th>Amortização</th>
+            <th>Saldo Devedor</th>
+          
+        </tr>
+  </thead>
+  <tbody>
+  </tbody>
+    
+</table>
+ 
+</body>
+</html>
