@@ -68,9 +68,16 @@
         var coeficiente1 = (parseFloat(j) / (1 - pot));
         $("#coeficiente").val(coeficiente1.toFixed(6));
         
-        //Cálculo da prestação
-        var r = valorFinanciado1 * coeficiente1;  
-        $("#prestacao").val(r.toFixed(2));
+        //Cálculo da prestação - sem entrada
+        var r = valorFinanciado1 * coeficiente1; 
+        //Cálculo da prestação - com entrada
+        var r2 = (coeficiente1 / (1 + j))
+   
+        if($('#entrada').val() == ""){
+            $("#prestacao").val(r.toFixed(2));
+        }else{
+            $("#prestacao").val(r2.toFixed(2));
+        }
         
         //Cálculo do valor pago
         var valorPago1 = r * parcelamento1;
@@ -124,6 +131,10 @@
 <form>
   <fieldset>
     <legend>Crédito Direto ao Consumidor</legend>
+    <div>
+      <label for="entrada">Entrada: </label>
+      <input id="entrada" name="entrada">
+    </div>
     <div>
       <label for="parcelamento">Parcelamento: </label>
       <input id="parcelamento" name="parcelamento">
