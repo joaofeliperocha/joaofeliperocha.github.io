@@ -12,7 +12,7 @@
     display: inline-block; width: 14em;
   }
   fieldset{
-    width: 600px;
+    width: 750px;
           
   }
   fieldset div {
@@ -46,8 +46,7 @@
         $("#tabs-2").show();
         $("#price").show();
         $("#table").show();
-        
-        
+             
         var parcelamento1 = $("#parcelamento").val();
         $("#parcelamento1").val(parcelamento1);
       
@@ -59,6 +58,59 @@
       
         var valorVoltar1 = $("#valorVoltar").val();
         $("#valorVoltar1").val(valorVoltar1);
+        
+        //Método de Newton        
+        if($('#valorFinal').val() != ""){
+            
+            //sem entrada
+            function funcao(taxa){
+                var p = parseFloat(parcelamento1)
+                var x = $("#valorFinal").val();
+                var a = Math.pow(1 + taxa, -p);
+                var b = Math.pow(1 + taxa, -p -1);
+                var y = (x/p) * ((1 - a) / taxa);
+                
+                //tem algum problema nesse 1-a
+                return ((y*taxa) - ((x/p) * (1 - a)));
+            }
+        
+            function funcaoDerivada(taxa){
+                var p = parseFloat(parcelamento1)
+                var x = $("#valorFinal").val();
+                var b = Math.pow(1 + taxa, -p -1);
+                var y = (x/p) * ((1 - a) / taxa);
+            
+                return y - x*b;
+            }
+        
+            var erro = 0.0001;
+            //contador de iterações
+            var k = 0;
+            var tn = 0;
+            var valorFinal1 = $("#valorFinal").val();
+            var taxaZero = parseFloat(valorFinal1) / parseFloat(valorFinanciado1);
+             
+            if (funcao(taxaZero) < erro){
+                $("#taxaReal").val(taxaZero.toFixed(4));
+                juros1 = taxaZero.toFixed(4);
+                $("#iteracoes").val(0);           
+            }else {
+                k = 1;
+                while (k <= 100){
+                    tn = taxaZero - (funcao(taxaZero) / funcaoDerivada(taxaZero));
+                    //Condição de parada
+                    if ((Math.abs(funcao(tn))) < erro || (Math.abs(tn - taxaZero)) < erro){
+                        $("#iteracoes").val(k); 
+                        $("#taxaReal").val(tn.toFixed(4));
+                        juros1 = tn.toFixed(4);
+                        k = 101;
+                    }
+                    taxaZero = tn;
+                    k = k + 1;     
+                }              
+            }
+            
+        }
                
         //Cálculo do coeficiente
         var j = parseFloat(juros1) / 100;
@@ -77,6 +129,7 @@
             $("#prestacao").val(r.toFixed(2));
         }else{
             $("#prestacao").val(r2.toFixed(2));
+            r = r2;
         }
         
         //Cálculo do valor pago
@@ -118,7 +171,7 @@
         table += "<td>" + somaAmortizacao.toFixed(2) + "</td>";
         table += "<td>" + saldoDevedor.toFixed(2) + "</td></tr>" 
         $('#table tbody').html(table);
-
+        
         //window.location.replace("tabela.html");
         tooltips.tooltip( "open" );
       })
@@ -205,6 +258,13 @@
             <div>
                 <label for="valorCorrigido">Valor Corrigido:</label>
                 <input id="valorCorrigido" name="valorCorrigido">
+            </div>
+            <div>
+                <label for="iteracoes">Taxa Real:</label>
+                <input id="iteracoes" name="iteracoes">
+                <label for="iteracoes"> iterações</label>
+                <input id="taxaReal" name="taxaReal">
+                <label for="taxaReal"> ao mês</label>
             </div>
         </fieldset>
   </div>
