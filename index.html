@@ -68,9 +68,9 @@
                 var x = $("#valorFinal").val();
                 var a = Math.pow(1 + taxa, -p);
                 var b = Math.pow(1 + taxa, -p -1);
-                var y = (x/p) * ((1 - a) / taxa);
+                var y = $("#valorFinanciado").val();
+                //var y = (x/p) * ((1 - a) / taxa);
                 
-                //tem algum problema nesse 1-a
                 return ((y*taxa) - ((x/p) * (1 - a)));
             }
         
@@ -78,7 +78,8 @@
                 var p = parseFloat(parcelamento1)
                 var x = $("#valorFinal").val();
                 var b = Math.pow(1 + taxa, -p -1);
-                var y = (x/p) * ((1 - a) / taxa);
+                var y = $("#valorFinanciado").val();
+                //var y = (x/p) * ((1 - a) / taxa);
             
                 return y - x*b;
             }
@@ -91,8 +92,8 @@
             var taxaZero = parseFloat(valorFinal1) / parseFloat(valorFinanciado1);
              
             if (funcao(taxaZero) < erro){
-                $("#taxaReal").val(taxaZero.toFixed(4));
-                juros1 = taxaZero.toFixed(4);
+                $("#taxaReal").val(taxaZero.toFixed(6));
+                juros1 = taxaZero.toFixed(6);
                 $("#iteracoes").val(0);           
             }else {
                 k = 1;
@@ -101,8 +102,8 @@
                     //Condição de parada
                     if ((Math.abs(funcao(tn))) < erro || (Math.abs(tn - taxaZero)) < erro){
                         $("#iteracoes").val(k); 
-                        $("#taxaReal").val(tn.toFixed(4));
-                        juros1 = tn.toFixed(4);
+                        $("#taxaReal").val(tn.toFixed(6));
+                        juros1 = tn.toFixed(6);
                         k = 101;
                     }
                     taxaZero = tn;
@@ -113,7 +114,8 @@
         }
                
         //Cálculo do coeficiente
-        var j = parseFloat(juros1) / 100;
+        //var j = parseFloat(juros1) / 100;
+        var j = parseFloat(juros1);
         //var a = (1 + parseFloat(juros1));
         var a = (1 + j);
         var pot = Math.pow(a, -parseFloat(parcelamento1));     
